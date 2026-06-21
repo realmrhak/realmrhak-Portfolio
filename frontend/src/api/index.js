@@ -10,7 +10,6 @@ export const authApi = {
 export const projectApi = {
   list: () => api.get('/projects'),
   get: (id) => api.get(`/projects/${id}`),
-  // `data` can be plain JSON (no file) OR include an `image` File — auto-detected
   create: (data) => buildMultipart(data, ['tags', 'is_featured']).then((p) => api.post('/projects', ...p)),
   update: (id, data) => buildMultipart(data, ['tags', 'is_featured']).then((p) => api.put(`/projects/${id}`, ...p)),
   remove: (id) => api.delete(`/projects/${id}`),
@@ -28,6 +27,7 @@ export const certificateApi = {
 // ====== Tech Stack ======
 export const techApi = {
   list: () => api.get('/tech'),
+  get: (id) => api.get(`/tech/${id}`),
   create: (data) => buildMultipart(data).then((p) => api.post('/tech', ...p)),
   update: (id, data) => buildMultipart(data).then((p) => api.put(`/tech/${id}`, ...p)),
   remove: (id) => api.delete(`/tech/${id}`),
@@ -71,15 +71,9 @@ export function resolveMediaUrl(url) {
 /**
  * Build a multipart/form-data payload when the data contains a File (image),
  * otherwise send plain JSON. Returns [payload, config] for axios spread.
- *
- * @param {Object} data - the request body. If it contains an `image` key
- *   that is a File, we use multipart/form-data; otherwise we use JSON.
- * @param {string[]} arrayFields - field names that should be split as arrays
- *   (e.g. tags). When using multipart, arrays must be appended multiple times.
  */
 function buildMultipart(data, arrayFields = []) {
   if (!(data?.image instanceof File)) {
-    // No file → send as JSON
     return Promise.resolve([data, undefined])
   }
 

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Trash2, X, Upload, Layers } from 'lucide-react'
+import { Plus, Trash2, X, Upload, Layers, Pencil } from 'lucide-react'
 import { techApi, resolveMediaUrl } from '../../api/index.js'
 import Swal from 'sweetalert2'
 
@@ -10,6 +10,7 @@ export default function AdminTech() {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
   const [showForm, setShowForm] = useState(false)
+  const [editingId, setEditingId] = useState(null)
   const [form, setForm] = useState(empty)
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
@@ -32,6 +33,47 @@ export default function AdminTech() {
   useEffect(() => {
     load()
   }, [])
+
+  // === EDIT HANDLER ===
+  // Opens the form pre-filled with the selected tech stack's data
+  const handleEdit = (item) => {
+    setEditingId(item._id)
+    setForm({
+      name: item.name || '',
+      logo_url: typeof item.logo_url === 'string' && item.logo_url.startsWith('http') ? '' : (item.logo_url || ''),
+      category: item.category || 'General',
+    })
+    // Show existing Cloudinary / remote logo as preview (don't revoke — it's not a blob URL)
+    setImagePreview(item.logo_url ? resolveMediaUrl(item.logo_url) : null)
+    setImageFile(null)
+    const input = document.getElementById('tech-image-input')
+    if (input) input.value = ''
+    setShowForm(true)
+    // Scroll to top so the form is visible
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleAddNew = () => {
+    setEditingId(null)
+    setForm(empty)
+    revokeBlob()
+    setImageFile(null)
+    setImagePreview(null)
+    const input = document.getElementById('tech-image-input')
+    if (input) input.value = ''
+    setShowForm(true)
+  }
+
+  const handleCancel = () => {
+    setShowForm(false)
+    setEditingId(null)
+    setForm(empty)
+    revokeBlob()
+    setImageFile(null)
+    setImagePreview(null)
+    const input = document.getElementById('tech-image-input')
+    if (input) input.value = ''
+  }
 
   const handleImage = (e) => {
     const file = e.target.files?.[0]
@@ -76,9 +118,36 @@ export default function AdminTech() {
     try {
       const payload = { ...form }
       if (imageFile) payload.image = imageFile
-      await techApi.create(payload)
+      if (editingId) {
+        // EDIT mode
+        await techApi.update(editingId, payload)
+        Swal.fire({
+          icon: 'success',
+          title: 'Tech updated',
+          background: '#1a1a1a',
+          color: '#fff',
+          timer: 1200,
+          showConfirmButton: false,
+          toast: true,
+          position: 'top-end',
+        })
+      } else {
+        // CREATE mode
+        await techApi.create(payload)
+        Swal.fire({
+          icon: 'success',
+          title: 'Tech added',
+          background: '#1a1a1a',
+          color: '#fff',
+          timer: 1200,
+          showConfirmButton: false,
+          toast: true,
+          position: 'top-end',
+        })
+      }
       resetForm()
       setShowForm(false)
+      setEditingId(null)
       load()
     } catch (err) {
       Swal.fire({
@@ -107,7 +176,17 @@ export default function AdminTech() {
     try {
       await techApi.remove(id)
       setItems((prev) => prev.filter((t) => t._id !== id))
-    } catch (err) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Deleted',
+        background: '#1a1a1a',
+        color: '#fff',
+        timer: 1200,
+        showConfirmButton: false,
+        toast: true,
+        position: 'top-end',
+      })
+    } catch {
       Swal.fire({ icon: 'error', title: 'Delete failed', background: '#1a1a1a', color: '#fff' })
     }
   }
@@ -120,11 +199,10 @@ export default function AdminTech() {
           <p className="text-white/50 text-sm">Manage technologies you work with</p>
         </div>
         <button
-          onClick={() => setShowForm(!showForm)}
+          onClick={handleAddNew}
           className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-black font-medium text-sm hover:scale-[1.02] transition"
         >
-          {showForm ? <X size={16} /> : <Plus size={16} />}
-          {showForm ? 'Cancel' : 'New'}
+          <Plus size={16} /> New
         </button>
       </div>
 
@@ -133,6 +211,19 @@ export default function AdminTech() {
           onSubmit={handleSubmit}
           className="mb-6 p-5 rounded-2xl border border-white/10 bg-white/[0.03] space-y-3"
         >
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-lg font-semibold text-white">
+              {editingId ? 'Edit Tech Stack' : 'Add New Tech Stack'}
+            </h2>
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-white transition"
+            >
+              <X size={16} />
+            </button>
+          </div>
+
           <input
             placeholder="Tech name (e.g. React)"
             value={form.name}
@@ -189,13 +280,22 @@ export default function AdminTech() {
             className="admin-input disabled:opacity-40"
           />
 
-          <button
-            type="submit"
-            disabled={saving}
-            className="px-4 py-2 rounded-xl bg-white text-black text-sm font-medium disabled:opacity-60"
-          >
-            {saving ? 'Saving...' : 'Add Tech'}
-          </button>
+          <div className="flex items-center gap-3 pt-1">
+            <button
+              type="submit"
+              disabled={saving}
+              className="px-4 py-2 rounded-xl bg-white text-black text-sm font-medium disabled:opacity-60 hover:scale-[1.02] transition"
+            >
+              {saving ? 'Saving...' : editingId ? 'Save Changes' : 'Add Tech'}
+            </button>
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 text-sm font-medium transition"
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       )}
 
@@ -219,6 +319,7 @@ export default function AdminTech() {
                 <img
                   src={resolveMediaUrl(t.logo_url)}
                   alt={t.name}
+                  loading="lazy"
                   className="w-12 h-12 object-contain mb-2"
                 />
               ) : (
@@ -228,12 +329,24 @@ export default function AdminTech() {
               )}
               <p className="text-xs text-white/80 font-medium">{t.name}</p>
               <p className="text-[10px] text-white/40">{t.category}</p>
-              <button
-                onClick={() => handleDelete(t._id)}
-                className="mt-2 opacity-0 group-hover:opacity-100 transition px-2 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-[10px] text-red-300 flex items-center gap-1"
-              >
-                <Trash2 size={10} /> Delete
-              </button>
+
+              {/* Action buttons — Edit + Delete */}
+              <div className="mt-2 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition">
+                <button
+                  onClick={() => handleEdit(t)}
+                  className="px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-[10px] text-white flex items-center gap-1"
+                  title="Edit"
+                >
+                  <Pencil size={10} /> Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(t._id)}
+                  className="px-2 py-1 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-[10px] text-red-300 flex items-center gap-1"
+                  title="Delete"
+                >
+                  <Trash2 size={10} /> Delete
+                </button>
+              </div>
             </motion.div>
           ))}
         </div>
