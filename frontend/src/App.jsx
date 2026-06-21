@@ -26,12 +26,30 @@ function AdminFallback() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        color: 'white',
+        gap: '12px',
+        color: 'rgba(255,255,255,0.7)',
         background: '#050505',
-        fontFamily: "'DM Mono', monospace",
+        fontFamily: "'Poppins', sans-serif",
+        fontSize: '15px',
+        fontWeight: 500,
+        letterSpacing: '0.01em',
       }}
     >
-      Loading admin…
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        style={{ animation: 'spin 1s linear infinite' }}
+      >
+        <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+      </svg>
+      <span>Loading admin...</span>
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
     </div>
   )
 }
