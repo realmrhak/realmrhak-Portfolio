@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Save, Loader2, Upload, X } from 'lucide-react'
 import { projectApi, resolveMediaUrl } from '../../api/index.js'
 import Swal from 'sweetalert2'
+import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx'
 
 export default function AdminProjectEdit() {
   const { id } = useParams()
@@ -143,7 +144,7 @@ export default function AdminProjectEdit() {
   }
 
   if (loading) {
-    return <div className="text-white/50 text-sm">Loading…</div>
+    return <LoadingSpinner text="Loading project..." />
   }
 
   return (

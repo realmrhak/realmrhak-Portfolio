@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Plus, Trash2, X, Upload } from 'lucide-react'
 import { certificateApi, resolveMediaUrl } from '../../api/index.js'
 import Swal from 'sweetalert2'
+import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx'
 
 const empty = { title: '', issuer: '', image_url: '', issued_at: '' }
 
@@ -223,7 +224,7 @@ export default function AdminCertificates() {
       )}
 
       {loading ? (
-        <div className="text-white/40 text-sm">Loading…</div>
+        <LoadingSpinner text="Loading certificates..." />
       ) : items.length === 0 ? (
         <div className="text-white/40 text-sm py-8 text-center border border-white/10 rounded-xl">
           No certificates yet.

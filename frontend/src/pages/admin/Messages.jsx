@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Mail, MailOpen, Trash2 } from 'lucide-react'
 import { messageApi } from '../../api/index.js'
 import Swal from 'sweetalert2'
+import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx'
 
 export default function AdminMessages() {
   const [items, setItems] = useState([])
@@ -53,7 +54,7 @@ export default function AdminMessages() {
       <p className="text-white/50 text-sm mb-6">Contact form submissions</p>
 
       {loading ? (
-        <div className="text-white/40 text-sm">Loading…</div>
+        <LoadingSpinner text="Loading messages..." />
       ) : items.length === 0 ? (
         <div className="text-white/40 text-sm py-8 text-center border border-white/10 rounded-xl">
           No messages yet.
@@ -66,9 +67,8 @@ export default function AdminMessages() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.02 }}
-              className={`rounded-2xl border p-4 ${
-                m.is_read ? 'border-white/10 bg-white/[0.02]' : 'border-amber-500/30 bg-amber-500/5'
-              }`}
+              className={`rounded-2xl border p-4 ${m.is_read ? 'border-white/10 bg-white/[0.02]' : 'border-amber-500/30 bg-amber-500/5'
+                }`}
             >
               <div className="flex items-start justify-between mb-2 gap-3">
                 <div className="min-w-0">

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Code, Award, MessageSquare, Mail, Layers, MailOpen } from 'lucide-react'
 import { dashboardApi } from '../../api/index.js'
+import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx'
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null)
@@ -34,7 +35,7 @@ export default function Dashboard() {
       <p className="text-white/50 mb-8 text-sm">Overview of your portfolio content</p>
 
       {loading ? (
-        <div className="text-white/40 text-sm">Loading stats…</div>
+        <LoadingSpinner text="Loading stats..." />
       ) : error ? (
         <div className="rounded-2xl border border-red-500/20 bg-red-500/5 p-6 text-sm text-red-300">
           {error}

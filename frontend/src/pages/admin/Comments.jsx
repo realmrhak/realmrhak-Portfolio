@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Pin, Trash2, Heart } from 'lucide-react'
 import { commentApi, resolveMediaUrl } from '../../api/index.js'
 import Swal from 'sweetalert2'
+import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx'
 
 export default function AdminComments() {
   const [items, setItems] = useState([])
@@ -55,7 +56,7 @@ export default function AdminComments() {
       <p className="text-white/50 text-sm mb-6">Manage visitor comments</p>
 
       {loading ? (
-        <div className="text-white/40 text-sm">Loading…</div>
+        <LoadingSpinner text="Loading comments..." />
       ) : items.length === 0 ? (
         <div className="text-white/40 text-sm py-8 text-center border border-white/10 rounded-xl">
           No comments yet.
@@ -68,11 +69,10 @@ export default function AdminComments() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.02 }}
-              className={`rounded-2xl border p-4 flex gap-3 ${
-                c.is_pinned
+              className={`rounded-2xl border p-4 flex gap-3 ${c.is_pinned
                   ? 'border-purple-500/30 bg-purple-500/5'
                   : 'border-white/10 bg-white/[0.03]'
-              }`}
+                }`}
             >
               <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-xs font-semibold shrink-0">
                 {c.name?.charAt(0)}
@@ -106,11 +106,10 @@ export default function AdminComments() {
               <div className="flex flex-col gap-2">
                 <button
                   onClick={() => handleTogglePin(c._id)}
-                  className={`p-2 rounded-lg transition ${
-                    c.is_pinned
+                  className={`p-2 rounded-lg transition ${c.is_pinned
                       ? 'bg-purple-500/20 text-purple-300'
                       : 'bg-white/5 hover:bg-white/10 text-white/70'
-                  }`}
+                    }`}
                   title={c.is_pinned ? 'Unpin' : 'Pin to top'}
                 >
                   <Pin size={12} />

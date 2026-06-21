@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { Plus, Pencil, Trash2, ExternalLink } from 'lucide-react'
 import { projectApi, resolveMediaUrl } from '../../api/index.js'
 import Swal from 'sweetalert2'
+import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx'
 
 export default function AdminProjects() {
   const [projects, setProjects] = useState([])
@@ -74,7 +75,7 @@ export default function AdminProjects() {
       </div>
 
       {loading ? (
-        <div className="text-white/40 text-sm">Loading…</div>
+        <LoadingSpinner text="Loading projects..." />
       ) : projects.length === 0 ? (
         <div className="text-white/40 text-sm py-8 text-center border border-white/10 rounded-xl">
           No projects yet.

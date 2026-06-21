@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Plus, Trash2, X, Upload, Layers, Pencil } from 'lucide-react'
 import { techApi, resolveMediaUrl } from '../../api/index.js'
 import Swal from 'sweetalert2'
+import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx'
 
 const empty = { name: '', logo_url: '', category: 'General' }
 
@@ -300,7 +301,7 @@ export default function AdminTech() {
       )}
 
       {loading ? (
-        <div className="text-white/40 text-sm">Loading…</div>
+        <LoadingSpinner text="Loading tech stack..." />
       ) : items.length === 0 ? (
         <div className="text-white/40 text-sm py-8 text-center border border-white/10 rounded-xl">
           No tech stack items yet.
