@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: portfolio-backend
+    runtime: node
+    plan: free
+    region: singapore
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false  # set manually in Render dashboard (MongoDB Atlas connection string)
+      - key: JWT_SECRET
+        sync: false  # set manually — generate with: node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: ADMIN_NAME
+        value: Haroon
+      - key: ADMIN_EMAIL
+        sync: false  # set manually (e.g. realmrhak@admin.com)
+      - key: ADMIN_PASSWORD
+        sync: false  # set manually — REQUIRED in production
+      - key: ALLOWED_ORIGINS
+        sync: false  # set manually — your Vercel frontend URL, e.g. https://realmrhak-portfolio.vercel.app
+      - key: MAX_UPLOAD_MB
+        value: 5
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false  # set manually — from https://cloudinary.com/console
+      - key: CLOUDINARY_API_KEY
+        sync: false  # set manually — from https://cloudinary.com/console
+      - key: CLOUDINARY_API_SECRET
+        sync: false  # set manually — from https://cloudinary.com/console
