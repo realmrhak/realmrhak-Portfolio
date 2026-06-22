@@ -52,8 +52,7 @@ export default function Hero({ showApp }) {
       style={{
         minHeight: "100dvh",
         display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
+        alignItems: isMobile ? "flex-start" : "center", // ← mobile: top, desktop: center
         justifyContent: "flex-start",
         position: "relative",
         overflow: "hidden",
@@ -77,7 +76,7 @@ export default function Hero({ showApp }) {
         )}
       </div>
 
-      {/* MOBILE PROFILE PHOTO — centered at top, larger size */}
+      {/* MOBILE PROFILE PHOTO — positioned at top-right, NOT overlapping text */}
       {isMobile && (
         <motion.div
           initial={{ opacity: 0, scale: 0.85, y: 30 }}
@@ -88,17 +87,16 @@ export default function Hero({ showApp }) {
           }
           transition={{ duration: 0.9, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
           style={{
-            position: "relative",
-            width: 230, // ← back to your original size
-            height: 300, // ← back to your original size
-            borderRadius: "50%", // ← back to your circle shape
+            position: "absolute",
+            right: "23%", // ← responsive right position
+            top: "90px", // ← below navbar
+            width: 230,
+            height: 300,
+            borderRadius: "50%",
             border: "1px solid var(--border)",
             padding: 4,
             background: "var(--bg-card)",
             zIndex: 6,
-            marginBottom: 24,
-            marginTop: 10,
-            flexShrink: 0,
           }}
         >
           <img
@@ -109,7 +107,7 @@ export default function Hero({ showApp }) {
             style={{
               width: "100%",
               height: "100%",
-              borderRadius: "10%", // ← back to your 10% radius
+              borderRadius: "10%",
               objectFit: "cover",
               display: "block",
             }}
@@ -117,14 +115,14 @@ export default function Hero({ showApp }) {
         </motion.div>
       )}
 
-      {/* TEXT */}
+      {/* TEXT — same as your original, desktop unchanged */}
       <div
         className="md:max-w-[600px]"
         style={{
           width: "100%",
           position: "relative",
           zIndex: 5,
-          marginTop: 0,
+          marginTop: isMobile ? 315 : 0, // ← only mobile gets marginTop
         }}
       >
         {/* LABEL */}
@@ -333,14 +331,14 @@ export default function Hero({ showApp }) {
         </motion.div>
       </div>
 
-      {/* SCROLL INDICATOR */}
+      {/* SCROLL INDICATOR — positioned in free space at bottom */}
       <motion.div
         initial={false}
         animate={startAnim ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
         transition={{ duration: 0.9, delay: 1.2, ease: [0.22, 1, 0.36, 1] }}
         style={{
           position: "absolute",
-          bottom: isMobile ? 16 : 38,
+          bottom: isMobile ? 16 : 38, // ← mobile: lower in padding area
           left: "50%",
           transform: "translateX(-50%)",
           zIndex: 20,

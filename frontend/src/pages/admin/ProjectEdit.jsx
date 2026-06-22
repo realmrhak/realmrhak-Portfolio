@@ -1,163 +1,166 @@
-import { useEffect, useState, useRef } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Save, Loader2, Upload, X } from 'lucide-react'
-import { projectApi, resolveMediaUrl } from '../../api/index.js'
-import Swal from 'sweetalert2'
-import LoadingSpinner from '../../components/ui/LoadingSpinner.jsx'
+import { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { ArrowLeft, Save, Loader2, Upload, X } from "lucide-react";
+import { projectApi, resolveMediaUrl } from "../../api/index.js";
+import Swal from "sweetalert2";
+import LoadingSpinner from "../../components/ui/LoadingSpinner.jsx";
 
 export default function AdminProjectEdit() {
-  const { id } = useParams()
-  const navigate = useNavigate()
-  const isEdit = id && id !== 'new'
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const isEdit = id && id !== "new";
 
   const [form, setForm] = useState({
-    title: '',
-    description: '',
-    image_url: '',
-    live_url: '',
-    long_description: '',
-    tags: '',
+    title: "",
+    description: "",
+    image_url: "",
+    live_url: "",
+    long_description: "",
+    tags: "",
     is_featured: false,
-  })
-  const [imageFile, setImageFile] = useState(null)
-  const [imagePreview, setImagePreview] = useState(null)
-  const [loading, setLoading] = useState(isEdit)
-  const [saving, setSaving] = useState(false)
+  });
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [loading, setLoading] = useState(isEdit);
+  const [saving, setSaving] = useState(false);
 
-  const blobUrlRef = useRef(null)
+  const blobUrlRef = useRef(null);
   const revokeBlob = () => {
     if (blobUrlRef.current) {
-      URL.revokeObjectURL(blobUrlRef.current)
-      blobUrlRef.current = null
+      URL.revokeObjectURL(blobUrlRef.current);
+      blobUrlRef.current = null;
     }
-  }
+  };
   // Revoke on unmount — note we DON'T revoke when the preview is a server URL
-  useEffect(() => () => revokeBlob(), [])
+  useEffect(() => () => revokeBlob(), []);
 
   useEffect(() => {
-    if (!isEdit) return
+    if (!isEdit) return;
     projectApi
       .get(id)
       .then(({ data }) => {
         setForm({
-          title: data.title || '',
-          description: data.description || '',
-          image_url: data.image_url || '',
-          live_url: data.live_url || '',
-          long_description: data.long_description || '',
-          tags: Array.isArray(data.tags) ? data.tags.join(', ') : '',
+          title: data.title || "",
+          description: data.description || "",
+          image_url: data.image_url || "",
+          live_url: data.live_url || "",
+          long_description: data.long_description || "",
+          tags: Array.isArray(data.tags) ? data.tags.join(", ") : "",
           is_featured: Boolean(data.is_featured),
-        })
+        });
         if (data.image_url) {
-          setImagePreview(resolveMediaUrl(data.image_url))
+          setImagePreview(resolveMediaUrl(data.image_url));
         }
       })
-      .finally(() => setLoading(false))
-  }, [id, isEdit])
+      .finally(() => setLoading(false));
+  }, [id, isEdit]);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
-  }
+    const { name, value, type, checked } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
 
   const handleImage = (e) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const file = e.target.files?.[0];
+    if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Image too large',
-        text: 'Max 5MB',
-        background: '#1a1a1a',
-        color: '#fff',
-      })
-      return
+        icon: "warning",
+        title: "Image too large",
+        text: "Max 5MB",
+        background: "#1a1a1a",
+        color: "#fff",
+      });
+      return;
     }
-    revokeBlob()
-    const url = URL.createObjectURL(file)
-    blobUrlRef.current = url
-    setImageFile(file)
-    setImagePreview(url)
+    revokeBlob();
+    const url = URL.createObjectURL(file);
+    blobUrlRef.current = url;
+    setImageFile(file);
+    setImagePreview(url);
     // Clear URL field since we're using a file
-    setForm((prev) => ({ ...prev, image_url: '' }))
-  }
+    setForm((prev) => ({ ...prev, image_url: "" }));
+  };
 
   const removeImage = () => {
-    revokeBlob()
-    setImageFile(null)
-    setImagePreview(null)
-    setForm((prev) => ({ ...prev, image_url: '' }))
-    const input = document.getElementById('project-image-input')
-    if (input) input.value = ''
-  }
+    revokeBlob();
+    setImageFile(null);
+    setImagePreview(null);
+    setForm((prev) => ({ ...prev, image_url: "" }));
+    const input = document.getElementById("project-image-input");
+    if (input) input.value = "";
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!form.title.trim() || !form.description.trim()) {
       Swal.fire({
-        icon: 'warning',
-        title: 'Title and description are required',
-        background: '#1a1a1a',
-        color: '#fff',
-      })
-      return
+        icon: "warning",
+        title: "Title and description are required",
+        background: "#1a1a1a",
+        color: "#fff",
+      });
+      return;
     }
 
-    setSaving(true)
+    setSaving(true);
     const payload = {
       ...form,
       tags: form.tags
-        .split(',')
+        .split(",")
         .map((t) => t.trim())
         .filter(Boolean),
-    }
+    };
     if (imageFile) {
-      payload.image = imageFile
+      payload.image = imageFile;
     }
 
     try {
       if (isEdit) {
-        await projectApi.update(id, payload)
+        await projectApi.update(id, payload);
       } else {
-        await projectApi.create(payload)
+        await projectApi.create(payload);
       }
       await Swal.fire({
-        icon: 'success',
-        title: isEdit ? 'Project updated' : 'Project created',
-        background: '#1a1a1a',
-        color: '#fff',
+        icon: "success",
+        title: isEdit ? "Project updated" : "Project created",
+        background: "#1a1a1a",
+        color: "#fff",
         timer: 1500,
         showConfirmButton: false,
-      })
-      navigate('/admin/projects')
+      });
+      navigate("/admin/projects");
     } catch (err) {
       Swal.fire({
-        icon: 'error',
-        title: 'Save failed',
-        text: err.response?.data?.message || 'Try again later',
-        background: '#1a1a1a',
-        color: '#fff',
-      })
+        icon: "error",
+        title: "Save failed",
+        text: err.response?.data?.message || "Try again later",
+        background: "#1a1a1a",
+        color: "#fff",
+      });
     } finally {
-      setSaving(false)
+      setSaving(false);
     }
-  }
+  };
 
   if (loading) {
-    return <LoadingSpinner text="Loading project..." />
+    return <LoadingSpinner text="Loading project..." />;
   }
 
   return (
     <div>
       <button
-        onClick={() => navigate('/admin/projects')}
-        className="flex items-center gap-2 text-white/60 hover:text-white text-sm mb-4 transition"
+        onClick={() => navigate("/admin/projects")}
+        className="flex items-center gap-2 mb-4 text-sm transition text-white/60 hover:text-white"
       >
         <ArrowLeft size={14} /> Back to projects
       </button>
 
-      <h1 className="text-2xl font-bold text-white mb-6">
-        {isEdit ? 'Edit Project' : 'New Project'}
+      <h1 className="mb-6 text-2xl font-bold text-white">
+        {isEdit ? "Edit Project" : "New Project"}
       </h1>
 
       <form onSubmit={handleSubmit} className="max-w-2xl space-y-4">
@@ -187,10 +190,12 @@ export default function AdminProjectEdit() {
         {/* IMAGE — file upload OR URL */}
         <Field label="Project Image — upload a file (recommended) OR paste a URL">
           {/* File picker */}
-          <label className="rounded-2xl border border-dashed border-white/15 bg-black/20 p-4 flex items-center gap-3 cursor-pointer hover:border-white/30 transition">
+          <label className="flex items-center gap-3 p-4 transition border border-dashed cursor-pointer rounded-2xl border-white/15 bg-black/20 hover:border-white/30">
             <Upload size={16} className="text-white/50" />
             <span className="text-sm text-white/70">
-              {imageFile ? imageFile.name : 'Click to upload image (max 5MB, jpg/png/webp)'}
+              {imageFile
+                ? imageFile.name
+                : "Click to upload image (max 5MB, jpg/png/webp)"}
             </span>
             <input
               id="project-image-input"
@@ -203,12 +208,16 @@ export default function AdminProjectEdit() {
 
           {/* Preview */}
           {imagePreview && (
-            <div className="relative mt-2 rounded-xl overflow-hidden border border-white/10 h-40 bg-black/20">
-              <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+            <div className="relative h-40 mt-2 overflow-hidden border rounded-xl border-white/10 bg-black/20">
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="object-cover w-full h-full"
+              />
               <button
                 type="button"
                 onClick={removeImage}
-                className="absolute top-2 right-2 w-8 h-8 rounded-lg bg-black/70 hover:bg-red-500/30 flex items-center justify-center text-white"
+                className="absolute flex items-center justify-center w-8 h-8 text-white rounded-lg top-2 right-2 bg-black/70 hover:bg-red-500/30"
               >
                 <X size={14} />
               </button>
@@ -230,8 +239,9 @@ export default function AdminProjectEdit() {
             disabled={!!imageFile}
             className="admin-input disabled:opacity-40"
           />
-          <p className="text-xs text-white/40 mt-1">
-            Tip: Google Drive share links don't work. Use the upload button above, or paste a direct image URL (.png/.jpg).
+          <p className="mt-1 text-xs text-white/40">
+            Tip: Google Drive share links don't work. Use the upload button
+            above, or paste a direct image URL (.png/.jpg).
           </p>
         </Field>
 
@@ -262,13 +272,19 @@ export default function AdminProjectEdit() {
             onChange={handleChange}
             rows={10}
             maxLength={8000}
-            placeholder={'## Key Features\n\n- Built with React + Node.js\n- **Real-time** updates via Socket.io\n- JWT authentication\n\n## Tech Stack\n\n- Frontend: React, Tailwind\n- Backend: Express, MongoDB'}
+            placeholder={
+              "## Key Features\n\n- Built with React + Node.js\n- **Real-time** updates via Socket.io\n- JWT authentication\n\n## Tech Stack\n\n- Frontend: React, Tailwind\n- Backend: Express, MongoDB"
+            }
             className="admin-input"
-            style={{ fontFamily: "'DM Mono', monospace", fontSize: 13, lineHeight: 1.6 }}
+            style={{
+              fontFamily: "'Poppins', sans-serif",
+              fontSize: 13,
+              lineHeight: 1.6,
+            }}
           />
         </Field>
 
-        <label className="flex items-center gap-2 text-white/80 text-sm cursor-pointer">
+        <label className="flex items-center gap-2 text-sm cursor-pointer text-white/80">
           <input
             type="checkbox"
             name="is_featured"
@@ -284,19 +300,23 @@ export default function AdminProjectEdit() {
           disabled={saving}
           className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-black font-medium text-sm hover:scale-[1.02] transition disabled:opacity-60"
         >
-          {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
-          {isEdit ? 'Save Changes' : 'Create Project'}
+          {saving ? (
+            <Loader2 size={14} className="animate-spin" />
+          ) : (
+            <Save size={14} />
+          )}
+          {isEdit ? "Save Changes" : "Create Project"}
         </button>
       </form>
     </div>
-  )
+  );
 }
 
 function Field({ label, children }) {
   return (
     <div>
-      <label className="block text-sm text-white/60 mb-2">{label}</label>
+      <label className="block mb-2 text-sm text-white/60">{label}</label>
       {children}
     </div>
-  )
+  );
 }
