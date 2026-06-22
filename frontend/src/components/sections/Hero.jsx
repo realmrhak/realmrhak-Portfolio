@@ -2,7 +2,6 @@ import { useEffect, useState, lazy, Suspense } from "react";
 import { motion } from "framer-motion";
 import TextType from "../band/TextType.jsx";
 
-// Lazy-load the heavy 3D scene — it pulls in three.js + rapier + meshline (~1MB+)
 const Band3D = lazy(() => import("../band/App.jsx"));
 
 const skills = [
@@ -51,16 +50,18 @@ export default function Hero({ showApp }) {
       id="home"
       className="px-5 sm:px-6 md:pl-[120px] md:pr-[60px]"
       style={{
-        minHeight: "100vh",
+        minHeight: "100dvh",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start",
         position: "relative",
         overflow: "hidden",
         paddingTop: isMobile ? "90px" : 0,
+        paddingBottom: isMobile ? "80px" : "60px",
       }}
     >
-      {/* APP LAYER (3D Card) — only render on desktop, lazy-loaded */}
+      {/* APP LAYER (3D Card) — only render on desktop */}
       <div
         style={{
           position: "absolute",
@@ -76,7 +77,7 @@ export default function Hero({ showApp }) {
         )}
       </div>
 
-      {/* MOBILE PROFILE PHOTO — smaller and repositioned to avoid overlap */}
+      {/* MOBILE PROFILE PHOTO — centered at top, larger size */}
       {isMobile && (
         <motion.div
           initial={{ opacity: 0, scale: 0.85, y: 30 }}
@@ -87,16 +88,17 @@ export default function Hero({ showApp }) {
           }
           transition={{ duration: 0.9, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
           style={{
-            position: "absolute",
-            right: 98,
-            top: 80,
-            width: 230,
-            height: 230,
-            borderRadius: "50%",
+            position: "relative",
+            width: 230, // ← back to your original size
+            height: 300, // ← back to your original size
+            borderRadius: "50%", // ← back to your circle shape
             border: "1px solid var(--border)",
             padding: 4,
             background: "var(--bg-card)",
             zIndex: 6,
+            marginBottom: 24,
+            marginTop: 10,
+            flexShrink: 0,
           }}
         >
           <img
@@ -107,7 +109,7 @@ export default function Hero({ showApp }) {
             style={{
               width: "100%",
               height: "100%",
-              borderRadius: "10%",
+              borderRadius: "10%", // ← back to your 10% radius
               objectFit: "cover",
               display: "block",
             }}
@@ -122,7 +124,7 @@ export default function Hero({ showApp }) {
           width: "100%",
           position: "relative",
           zIndex: 5,
-          marginTop: 195,
+          marginTop: 0,
         }}
       >
         {/* LABEL */}
@@ -138,7 +140,7 @@ export default function Hero({ showApp }) {
         >
           <span
             style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: "'Poppins', sans-serif",
               fontSize: isMobile ? 10 : 12,
               color: "var(--text-muted)",
               letterSpacing: "0.2em",
@@ -161,7 +163,7 @@ export default function Hero({ showApp }) {
             transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
             style={{
               fontSize: isMobile
-                ? "clamp(32px, 11vw, 44px)"
+                ? "clamp(28px, 10vw, 42px)"
                 : "clamp(32px, 6vw, 62px)",
               fontWeight: 800,
               lineHeight: 1.05,
@@ -183,7 +185,7 @@ export default function Hero({ showApp }) {
             transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
             style={{
               fontSize: isMobile
-                ? "clamp(32px, 11vw, 44px)"
+                ? "clamp(28px, 10vw, 42px)"
                 : "clamp(32px, 6vw, 62px)",
               fontWeight: 800,
               lineHeight: 1.05,
@@ -205,7 +207,7 @@ export default function Hero({ showApp }) {
         >
           <span
             style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: "'Poppins', sans-serif",
               fontSize: isMobile ? 12 : 15,
               color: "var(--text-secondary)",
               letterSpacing: "0.05em",
@@ -288,7 +290,7 @@ export default function Hero({ showApp }) {
               }}
               transition={{ duration: 0.5 }}
               style={{
-                fontFamily: "'DM Mono', monospace",
+                fontFamily: "'Poppins', sans-serif",
                 fontSize: isMobile ? 10 : 11,
                 color: "var(--text-secondary)",
                 border: "1px solid var(--border)",
@@ -311,7 +313,7 @@ export default function Hero({ showApp }) {
         >
           <span
             style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: "'Poppins', sans-serif",
               fontSize: isMobile ? 11 : 13,
               color: "var(--text-muted)",
             }}
@@ -321,7 +323,7 @@ export default function Hero({ showApp }) {
 
           <span
             style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: "'Poppins', sans-serif",
               fontSize: isMobile ? 11 : 13,
               color: "var(--text-muted)",
             }}
@@ -338,7 +340,7 @@ export default function Hero({ showApp }) {
         transition={{ duration: 0.9, delay: 1.2, ease: [0.22, 1, 0.36, 1] }}
         style={{
           position: "absolute",
-          bottom: isMobile ? 24 : 38,
+          bottom: isMobile ? 16 : 38,
           left: "50%",
           transform: "translateX(-50%)",
           zIndex: 20,
@@ -352,7 +354,7 @@ export default function Hero({ showApp }) {
         >
           <span
             style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: "'Poppins', sans-serif",
               fontSize: isMobile ? 10 : 11,
               letterSpacing: "0.2em",
               textTransform: "uppercase",
