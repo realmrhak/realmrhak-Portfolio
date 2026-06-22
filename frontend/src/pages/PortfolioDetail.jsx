@@ -145,7 +145,7 @@ export default function PortfolioDetail() {
             loading="lazy"
             style={{
               width: "100%",
-              maxHeight: "min(360px, 50vh)",
+              maxHeight: "min(495px, 72vh)",
               objectFit: "cover",
               borderRadius: 16,
               marginBottom: 24,
