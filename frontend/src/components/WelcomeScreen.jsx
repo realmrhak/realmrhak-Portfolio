@@ -1,23 +1,23 @@
-import { motion } from 'framer-motion'
-import { Code2, User, Globe } from 'lucide-react'
+import { motion } from "framer-motion";
+import { Code2, User, Globe } from "lucide-react";
 
 export default function WelcomeScreen() {
-  const icons = [Code2, User, Globe]
+  const icons = [Code2, User, Globe];
 
   return (
     <div
       style={{
-        width: '100%',
-        height: '100vh',
-        background: '#000',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        position: 'fixed',
+        width: "100%",
+        height: "100vh",
+        background: "#000",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "fixed",
         inset: 0,
         zIndex: 9999,
-        overflow: 'hidden',
-        padding: '20px',
+        overflow: "hidden",
+        padding: "20px",
       }}
     >
       <motion.div
@@ -25,14 +25,14 @@ export default function WelcomeScreen() {
         animate={{ opacity: 1 }}
         transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
         style={{
-          textAlign: 'center',
-          color: 'white',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '16px',
-          width: '100%',
-          maxWidth: '320px',
+          textAlign: "center",
+          color: "white",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "16px",
+          width: "100%",
+          maxWidth: "320px",
         }}
       >
         {/* ICONS */}
@@ -44,10 +44,10 @@ export default function WelcomeScreen() {
             visible: { transition: { staggerChildren: 0.35 } },
           }}
           style={{
-            display: 'flex',
-            gap: '14px',
-            alignItems: 'center',
-            justifyContent: 'center',
+            display: "flex",
+            gap: "14px",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           {icons.map((Icon, index) => (
@@ -60,15 +60,15 @@ export default function WelcomeScreen() {
               transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1] }}
               animate={{ y: [0, -6, 0], rotate: [0, 2, -2, 0] }}
               style={{
-                width: '42px',
-                height: '42px',
-                borderRadius: '999px',
-                border: '1px solid rgba(255,255,255,0.1)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: 'rgba(255,255,255,0.03)',
-                backdropFilter: 'blur(10px)',
+                width: "42px",
+                height: "42px",
+                borderRadius: "999px",
+                border: "1px solid rgba(255,255,255,0.1)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "rgba(255,255,255,0.03)",
+                backdropFilter: "blur(10px)",
               }}
             >
               <Icon size={18} color="white" />
@@ -79,29 +79,33 @@ export default function WelcomeScreen() {
         {/* TEXT */}
         <div
           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '2px',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "2px",
           }}
         >
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '6px',
-              flexWrap: 'wrap',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "6px",
+              flexWrap: "wrap",
             }}
           >
             <motion.span
               initial={{ opacity: 0, x: 120 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.2, duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
+              transition={{
+                delay: 1.2,
+                duration: 1.6,
+                ease: [0.22, 1, 0.36, 1],
+              }}
               style={{
-                fontSize: 'clamp(16px, 5vw, 30px)',
+                fontSize: "clamp(16px, 5vw, 30px)",
                 fontWeight: 800,
-                letterSpacing: '-0.05em',
+                letterSpacing: "-0.05em",
               }}
             >
               Welcome
@@ -110,11 +114,15 @@ export default function WelcomeScreen() {
             <motion.span
               initial={{ opacity: 0, x: -120 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 1.5, duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
+              transition={{
+                delay: 1.5,
+                duration: 1.6,
+                ease: [0.22, 1, 0.36, 1],
+              }}
               style={{
-                fontSize: 'clamp(16px, 5vw, 30px)',
+                fontSize: "clamp(16px, 5vw, 30px)",
                 fontWeight: 800,
-                letterSpacing: '-0.05em',
+                letterSpacing: "-0.05em",
               }}
             >
               to my
@@ -126,13 +134,13 @@ export default function WelcomeScreen() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.8, duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
             style={{
-              fontSize: 'clamp(16px, 5vw, 30px)',
+              fontSize: "clamp(16px, 5vw, 30px)",
               fontWeight: 800,
-              letterSpacing: '-0.05em',
+              letterSpacing: "-0.05em",
               lineHeight: 1.15,
               margin: 0,
-              textAlign: 'center',
-              whiteSpace: 'nowrap',
+              textAlign: "center",
+              whiteSpace: "nowrap",
             }}
           >
             Portfolio Website
@@ -145,20 +153,24 @@ export default function WelcomeScreen() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 2.1, duration: 1.6, ease: [0.22, 1, 0.36, 1] }}
           style={{
-            padding: '6px 14px',
-            borderRadius: '999px',
-            border: '1px solid rgba(255,255,255,0.12)',
-            background: 'rgba(255,255,255,0.04)',
-            backdropFilter: 'blur(10px)',
-            fontSize: 'clamp(9px, 2.5vw, 12px)',
-            letterSpacing: '0.12em',
-            color: 'rgba(255,255,255,0.7)',
-            textAlign: 'center',
+            padding: "6px 9px",
+            borderRadius: "999px",
+            border: "1px solid rgba(255,255,255,0.12)",
+            background: "rgba(255,255,255,0.04)",
+            backdropFilter: "blur(10px)",
+            fontSize: "clamp(9px, 2.5vw, 12px)",
+            letterSpacing: "0.12em",
+            color: "rgba(255,255,255,0.7)",
+            textAlign: "center",
+            whiteSpace: "nowrap", // ← prevents line break
+            overflow: "hidden", // ← hides overflow
+            textOverflow: "ellipsis", // ← shows "..." if too long
+            maxWidth: "100%", // ← stays within parent
           }}
         >
-          www.realmrhak-portfolio.vercel.app
+          www.haroon-ameer-khan-portfolio.vercel.app
         </motion.div>
       </motion.div>
     </div>
-  )
+  );
 }

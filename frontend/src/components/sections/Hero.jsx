@@ -92,7 +92,7 @@ export default function Hero({ showApp }) {
             top: "90px", // ← below navbar
             width: 230,
             height: 300,
-            borderRadius: "50%",
+            borderRadius: "10%",
             border: "1px solid var(--border)",
             padding: 4,
             background: "var(--bg-card)",

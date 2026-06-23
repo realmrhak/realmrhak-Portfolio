@@ -23,7 +23,7 @@ const experiences = [
     role: "Backend AI Engineer Intern",
     company: "FlyRank AI",
     period: "Jun 2026 – Present",
-    location: "Lahore, Pakistan · On-site",
+    location: "Lahore, Pakistan · Remote",
     points: [
       "Developing backend AI systems including REST API development and AI model integration for production-level features.",
       "Contributing to real-world data pipelines and AI-powered automation workflows in a fast-paced startup environment.",
